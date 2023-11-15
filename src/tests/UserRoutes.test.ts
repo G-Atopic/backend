@@ -42,7 +42,7 @@ describe('UserRoutes', () => {
 
     expect(response.body).toEqual({
       code: 400,
-      message: 'User not foun',
+      message: 'User not found',
     });
     expect(response.status).toBe(400);
   });
