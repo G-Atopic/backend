@@ -1,0 +1,9 @@
+# folders
+node_modules
+dist
+docs
+scripts
+
+# file
+*.config.ts
+*.config.js
