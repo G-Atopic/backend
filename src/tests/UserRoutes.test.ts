@@ -82,7 +82,7 @@ describe('Create User Route', () => {
       id: expect.any(Number),
       email: 'johndoe@gmail.com',
       name: 'John Doe',
-      photo: null,
+      photo: 'https://via.placeholder.com/150',
     });
   });
   test('should fail on create a new user with same email', async () => {
