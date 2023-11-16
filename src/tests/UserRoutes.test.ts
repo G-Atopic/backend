@@ -18,6 +18,12 @@ const mocks = {
     email: 'johndoe@gmail.com',
     photo: null,
   },
+  userToCreate: {
+    name: 'John Doe',
+    email: 'johndoe@gmail.com',
+    password: '123456',
+    photo: 'https://via.placeholder.com/150',
+  },
 };
 
 vi.spyOn(bcrypt, 'hash').mockImplementation(async () => 'FakeHash');
@@ -29,12 +35,7 @@ describe('Find User Route', () => {
 
     const response = await request(app).get('/user/1');
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      id: 1,
-      name: 'John Doe',
-      email: 'johndoe@gmail.com',
-      photo: 'https://via.placeholder.com/150',
-    });
+    expect(response.body).toEqual(mocks.databaseUserWithPhoto);
   });
 
   test('should return an user without photo', async () => {
@@ -42,12 +43,7 @@ describe('Find User Route', () => {
 
     const response = await request(app).get('/user/1');
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({
-      id: 1,
-      name: 'John Doe',
-      email: 'johndoe@gmail.com',
-      photo: null,
-    });
+    expect(response.body).toEqual(mocks.databaseUserPhotoNull);
   });
   test('should return error Invalid user id', async () => {
     const response = await request(app).get('/user/x');
@@ -77,14 +73,9 @@ describe('Create User Route', () => {
   const spyFindByEmail = vi.spyOn(User, 'findByEmail');
   test('should create a new user', async () => {
     spyFindByEmail.mockImplementationOnce(async () => null);
-    spyCreate.mockImplementationOnce(async () => [mocks.databaseUserPhotoNull]);
+    spyCreate.mockImplementationOnce(async () => [mocks.databaseUserWithPhoto]);
 
-    const response = await request(app).post('/user').send({
-      name: 'John Doe',
-      email: 'johndoe@gmail.com',
-      password: '123456',
-      photo: 'https://via.placeholder.com/150',
-    });
+    const response = await request(app).post('/user').send(mocks.userToCreate);
 
     expect(response.status).toBe(201);
     expect(response.body).toEqual({
@@ -96,14 +87,9 @@ describe('Create User Route', () => {
   });
   test('should fail on create a new user with same email', async () => {
     spyFindByEmail.mockImplementationOnce(async () => true);
-    spyCreate.mockImplementationOnce(async () => [mocks.databaseUserPhotoNull]);
+    spyCreate.mockImplementationOnce(async () => [mocks.databaseUserWithPhoto]);
 
-    const response = await request(app).post('/user').send({
-      name: 'John Doe',
-      email: 'johndoe@gmail.com',
-      password: '123456',
-      photo: 'https://via.placeholder.com/150',
-    });
+    const response = await request(app).post('/user').send(mocks.userToCreate);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -120,11 +106,7 @@ describe('Update User Route', () => {
     spyUpdate.mockImplementationOnce(async () => [mocks.databaseUserPhotoNull]);
     spyFindByEmail.mockImplementationOnce(async () => undefined);
 
-    const response = await request(app).put('/user/2').send({
-      name: 'John Doe',
-      email: 'johndoe@gmail.com',
-      password: '123456',
-    });
+    const response = await request(app).put('/user/2').send(mocks.userToCreate);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       id: 1,
@@ -159,8 +141,8 @@ describe('Update User Route', () => {
     const response = await request(app).put('/user/x');
 
     expect(response.body).toEqual({
-      code: 400,
       message: 'Invalid user id',
+      code: 400,
     });
     expect(response.status).toBe(400);
   });
