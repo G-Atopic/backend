@@ -5,7 +5,7 @@ import { ErrorType } from '../types';
 import { errorIsCustomError, errorIsErrorClass, errorIsKnex } from '../utils';
 
 export const notFoundHanlder = (_req: Request, res: Response) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: 'Route not found!' });
 };
 
 export const errorHandler = async (
@@ -21,7 +21,7 @@ export const errorHandler = async (
   };
 
   if (errorIsErrorClass(err)) {
-    if (req.params.stack === 'true') {
+    if (req.query.stack === 'true') {
       error.message = err.message;
       error.stack = err.stack;
     }

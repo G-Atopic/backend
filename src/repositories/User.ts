@@ -1,32 +1,48 @@
 import knexInstance from 'knex';
 import config from '../../knexfile';
 import { UserType } from '../types';
-import { errorConstructor } from '../utils';
 const knex = knexInstance(config);
 
-const findById = async (id: number) =>
+const findById = async (id: number): Promise<UserType.DatabaseUser> =>
   await knex('users')
     .select('id', 'name', 'email', 'photo')
     .where({ id })
     .first();
 
-const create = async (data: UserType.User) => {
-  const emailAlreadyExists = await knex('users')
-    .where({ email: data.email })
+const findByEmail = async (email: string) =>
+  await knex('users')
+    .select('id', 'name', 'email', 'photo')
+    .where({ email })
     .first();
-  if (emailAlreadyExists) {
-    throw errorConstructor({ message: 'Email already exists', code: 400 });
+
+const create = async (data: UserType.User): Promise<UserType.DatabaseUser[]> =>
+  await knex('users').insert(data).returning(['id', 'name', 'email', 'photo']);
+
+const update = async (
+  id: number,
+  data: UserType.UserPatch,
+): Promise<UserType.DatabaseUser[]> => {
+  try {
+    console.log('quebra aqui?', data);
+    const user = await knex('users')
+      .where({ id })
+      .update(data)
+      .returning(['id', 'name', 'email', 'photo']);
+    console.log('quebra aqui?');
+    return user;
+  } catch (error) {
+    return [];
   }
-  const created = await knex('users').insert(data);
-
-  return findById(created[0]);
 };
+// .returning(['id', 'name', 'email', 'photo']);
 
-const findByIdAndUpdate = async (id: number, data: UserType.UserUpdate) => {
-  await knex('users').where({ id }).update(data);
-  return await findById(id);
+const removeById = async (id: number) =>
+  await knex('users').where({ id }).del();
+
+export default {
+  findById,
+  create,
+  update,
+  removeById,
+  findByEmail,
 };
-
-const findByIdAndRemove = (id: number) => knex('users').where({ id }).del();
-
-export default { findById, create, findByIdAndUpdate, findByIdAndRemove };

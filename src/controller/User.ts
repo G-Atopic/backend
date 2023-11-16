@@ -17,7 +17,7 @@ const findUserById = async (
     const id = validateId(req.params.id);
     const user = await User.getUser(id);
 
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     next(error);
   }
@@ -26,7 +26,7 @@ const findUserById = async (
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await User.createUser(req.body);
-    res.json(user);
+    res.status(201).json(user);
   } catch (error) {
     next(error);
   }
@@ -38,7 +38,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = await User.updateUser(id, req.body);
 
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     next(error);
   }
@@ -51,7 +51,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     if (!deleted) {
       return res.status(404).json({ msg: 'User not found' });
     }
-    res.json({ msg: `Removed user with id: ${id}` });
+    res.status(200).json({ msg: `Removed user with id: ${id}` });
   } catch (error) {
     next(error);
   }
