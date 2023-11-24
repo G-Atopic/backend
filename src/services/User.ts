@@ -32,7 +32,6 @@ const updateUser = async (
   }
   if (userData.email) {
     const emailAlreadyExists = await User.findByEmail(userData.email);
-    console.log({ emailAlreadyExists });
     if (emailAlreadyExists) {
       throw errorConstructor({ message: 'Email already exists', code: 400 });
     }

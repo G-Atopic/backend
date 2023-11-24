@@ -13,7 +13,7 @@ export const errorHandler = async (
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   const error: ErrorType.ErrorBody = {
     message: 'Something went wrong!',
@@ -36,6 +36,7 @@ export const errorHandler = async (
     error.message = err.message;
     error.code = err.code;
   }
+  console.log({ error: error.stack });
 
   res.status(error.code).json(error);
 };
