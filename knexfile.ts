@@ -1,20 +1,11 @@
 import type { Knex } from 'knex';
 import dotenv from 'dotenv';
+import { KnexType } from './src/types';
 
 dotenv.config();
 
-type ConnectionConfig = {
-  connection: Knex.Config['connection'];
-  client: Knex.Config['client'];
-};
-
-type EnviromentConfig = {
-  dev: ConnectionConfig;
-  prd?: ConnectionConfig;
-};
-
 // Update with your config settings.
-const envConfig: EnviromentConfig = {
+const envConfig: KnexType.EnviromentConfig = {
   dev: {
     client: 'sqlite3',
     connection: { filename: './src/database/dev.sqlite3' },

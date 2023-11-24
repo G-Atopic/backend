@@ -10,6 +10,7 @@ const errorConstructor = (
 const errorIsCustomError = (err: unknown): err is ErrorType.CustomError => {
   return (err as ErrorType.CustomError).code !== undefined;
 };
+
 const errorIsKnex = (err: unknown): err is ErrorType.KnexError => {
   return (err as ErrorType.KnexError).errno !== undefined;
 };

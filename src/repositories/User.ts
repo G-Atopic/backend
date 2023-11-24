@@ -1,7 +1,5 @@
-import knexInstance from 'knex';
-import config from '../../knexfile';
+import { knex } from './index';
 import { UserType } from '../types';
-const knex = knexInstance(config);
 
 const findById = async (id: number): Promise<UserType.DatabaseUser> =>
   await knex('users')
