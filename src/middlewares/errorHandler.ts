@@ -36,7 +36,6 @@ export const errorHandler = async (
     error.message = err.message;
     error.code = err.code;
   }
-  console.log({ error: error.stack });
 
   res.status(error.code).json(error);
 };
