@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import request from 'supertest';
 import { app } from '../app';
 import { expect, test, describe, vi } from 'vitest';
@@ -5,11 +6,12 @@ import { Login } from '../repositories';
 describe('Login Route Test', () => {
   const spy = vi.spyOn(Login, 'findUser');
   test('should login successfully', async () => {
+    vi.spyOn(bcrypt, 'compare').mockImplementation(async () => true);
     spy.mockImplementationOnce(async () => ({
       id: 2,
       name: 'Gabriel',
       email: 'gabriel@gmail.com',
-      password: '$2b$10$PfegHbxu.DV8uBuSvVOz4uWDcTu2Bn903Ix1Ht1We0MDJBG.cfqhq',
+      password: 'EncriptedStringPassword',
       photo: null,
     }));
     const response = await request(app)
@@ -36,11 +38,12 @@ describe('Login Route Test', () => {
   });
 
   test('login should fail', async () => {
+    vi.spyOn(bcrypt, 'compare').mockImplementation(async () => false);
     spy.mockImplementationOnce(async () => ({
       id: 2,
       name: 'Gabriel',
       email: 'gabriel@gmail.com',
-      password: '$2b$10$PfegHbxu.DV8uBuSvVOz4uWDcTu2Bn903Ix1Ht1We0MDJBG.cfqhq',
+      password: 'EncriptedStringPassword',
       photo: null,
     }));
     const response = await request(app)
