@@ -1,5 +1,5 @@
 import { ErrorType } from '../types';
-
+import { ValidationError } from 'yup';
 const errorConstructor = (
   error: ErrorType.CustomError,
 ): ErrorType.CustomError => ({
@@ -14,9 +14,17 @@ const errorIsCustomError = (err: unknown): err is ErrorType.CustomError => {
 const errorIsKnex = (err: unknown): err is ErrorType.KnexError => {
   return (err as ErrorType.KnexError).errno !== undefined;
 };
-
 const errorIsErrorClass = (err: unknown): err is Error => {
   return err instanceof Error;
 };
+const errorIsValidationError = (err: unknown): err is Error => {
+  return err instanceof ValidationError;
+};
 
-export { errorIsCustomError, errorIsKnex, errorIsErrorClass, errorConstructor };
+export {
+  errorIsValidationError,
+  errorIsCustomError,
+  errorIsKnex,
+  errorIsErrorClass,
+  errorConstructor,
+};

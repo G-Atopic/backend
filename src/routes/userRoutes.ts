@@ -1,18 +1,24 @@
 import { Router } from 'express';
 import UserController from '../controller/UserController';
+import {
+  validateRouteId,
+  validateCreateBody,
+  validateUpdateBody,
+} from '../middlewares/validateRequest';
 
 const router = Router();
 
-// GET user by ID
-router.get('/:id', UserController.findUserById);
+router.get('/:id', validateRouteId, UserController.findUserById);
 
-// CREATE a user
-router.post('/', UserController.createUser);
+router.post('/', validateCreateBody, UserController.createUser);
 
-// UPDATE a user
-router.put('/:id', UserController.updateUser);
+router.put(
+  '/:id',
+  validateUpdateBody,
+  validateRouteId,
+  UserController.updateUser,
+);
 
-// DELETE a user
-router.delete('/:id', UserController.deleteUser);
+router.delete('/:id', validateRouteId, UserController.deleteUser);
 
 export default router;
