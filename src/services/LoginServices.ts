@@ -11,14 +11,16 @@ const validatePassword = async ({
   const allPossiblePasswords: Promise<boolean>[] = [];
 
   for (let indexA = 1; indexA <= 2 ** binaryPassword.length; indexA++) {
-    let onePossiblePassword = '';
-    let oneBinaryPassword = '';
-    for (let indexB = 0; indexB < binaryPassword.length; indexB++) {
-      const key = 2 ** indexB;
-      oneBinaryPassword += Math.floor((indexA % (key * 2)) / key);
-      onePossiblePassword +=
-        buttons[binaryPassword[indexB]][Math.floor((indexA % (key * 2)) / key)];
-    }
+    const onePossiblePassword = binaryPassword
+      .map((_binaryPasswordDigit, indexB) => {
+        const singularButton = buttons[binaryPassword[indexB]];
+        const currentBinayDigit = Math.floor(
+          (indexA % 2 ** (indexB + 1)) / 2 ** indexB,
+        );
+        return singularButton[currentBinayDigit];
+      })
+      .join('');
+
     allPossiblePasswords.push(
       bcrypt.compare(onePossiblePassword, databasePassword),
     );
@@ -27,6 +29,7 @@ const validatePassword = async ({
   const allPasswordVerified = await Promise.all(allPossiblePasswords);
   return allPasswordVerified.some((isPasswordValid) => isPasswordValid);
 };
+
 const userLogin = async ({
   email,
   buttons,
