@@ -2,7 +2,12 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { ErrorType } from '../types';
-import { errorIsCustomError, errorIsErrorClass, errorIsKnex } from '../utils';
+import {
+  errorIsCustomError,
+  errorIsErrorClass,
+  errorIsKnex,
+  errorIsValidationError,
+} from '../utils';
 
 export const notFoundHanlder = (_req: Request, res: Response) => {
   res.status(404).json({ message: 'Route not found!' });
@@ -35,6 +40,10 @@ export const errorHandler = async (
   if (errorIsCustomError(err)) {
     error.message = err.message;
     error.code = err.code;
+  }
+  if (errorIsValidationError(err)) {
+    error.message = err.message;
+    error.code = 400;
   }
 
   res.status(error.code).json(error);
