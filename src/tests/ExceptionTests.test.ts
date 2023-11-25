@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../app';
 import { expect, test, describe, vi } from 'vitest';
-describe('Exeption Routes Test', () => {
+describe('Exception Routes Test', () => {
   test('test route customError should return error', async () => {
     const response = await request(app).get('/error/customError');
     expect(response.status).toBe(500);
