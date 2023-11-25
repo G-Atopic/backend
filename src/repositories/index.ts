@@ -1,5 +1,5 @@
-import User from './User';
-import Login from './Login';
+import User from './UserRepositories';
+import Login from './LoginRepositories';
 import knexInstance from 'knex';
 import config from '../../knexfile';
 const knex = knexInstance(config);
