@@ -40,10 +40,8 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = Number(req.params.id);
-    const deleted = await User.deleteUser(id);
-    if (!deleted) {
-      return res.status(404).json({ msg: 'User not found' });
-    }
+    await User.deleteUser(id);
+
     res.status(200).json({ msg: `Removed user with id: ${id}` });
   } catch (error) {
     next(error);

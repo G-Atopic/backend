@@ -45,7 +45,11 @@ const updateUser = async (
 };
 
 const deleteUser = async (userId: number): Promise<number> => {
-  return await User.removeById(userId);
+  const user = await User.removeById(userId);
+  if (!user) {
+    throw errorConstructor({ message: 'User not found', code: 400 });
+  }
+  return user;
 };
 
 export default { getUser, updateUser, deleteUser, createUser };
