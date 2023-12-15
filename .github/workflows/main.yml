@@ -5,8 +5,10 @@ on:
       - '**'
 
 jobs:
-  cache-and-install:
+  CI-pnpm-with-chache:
     runs-on: ubuntu-latest
+    env:
+      JWT: 'GITHUB_ACTIONS_JWT_SECRET'
 
     steps:
       - name: Checkout
