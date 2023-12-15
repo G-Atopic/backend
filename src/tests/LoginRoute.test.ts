@@ -30,10 +30,7 @@ describe('Login Route Test', () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      id: 2,
-      name: 'Gabriel',
-      email: 'gabriel@gmail.com',
-      photo: null,
+      token: expect.any(String),
     });
   });
 

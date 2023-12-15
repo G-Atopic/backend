@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { Login } from '../repositories';
 import { errorConstructor } from '../utils';
 import { LoginType, UserType } from '../types';
+import jwt from 'jsonwebtoken';
 
 const validatePassword = async ({
   databasePassword,
@@ -14,10 +15,10 @@ const validatePassword = async ({
     const onePossiblePassword = binaryPassword
       .map((_binaryPasswordDigit, indexB) => {
         const singularButton = buttons[binaryPassword[indexB]];
-        const currentBinayDigit = Math.floor(
+        const currentBinaryDigit = Math.floor(
           (indexA % 2 ** (indexB + 1)) / 2 ** indexB,
         );
-        return singularButton[currentBinayDigit];
+        return singularButton[currentBinaryDigit];
       })
       .join('');
 
@@ -34,13 +35,13 @@ const userLogin = async ({
   email,
   buttons,
   binaryPassword,
-}: LoginType.UserLoginParams): Promise<UserType.DatabaseUser> => {
-  const user = await Login.findUser(email);
+}: LoginType.UserLoginParams): Promise<{ token: string }> => {
+  const { password, ...user } = await Login.findUser(email);
 
   if (!user) {
     throw errorConstructor({ message: 'User not found', code: 400 });
   }
-  const databasePassword = user.password;
+  const databasePassword = password;
 
   const isPasswordValid = await validatePassword({
     databasePassword,
@@ -51,8 +52,10 @@ const userLogin = async ({
   if (!isPasswordValid) {
     throw errorConstructor({ message: 'Invalid Credentials', code: 401 });
   }
-  delete user.password;
-  return user;
+
+  const secret: string = process.env.JWT!;
+  const token = jwt.sign({ ...user }, secret, { expiresIn: '1d' });
+  return { token };
 };
 
 export default { userLogin };
