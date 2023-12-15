@@ -32,6 +32,7 @@ const loginValidatorMiddleware = async (
     next(error);
   }
 };
+
 const validateCreateBody = async (
   req: Request,
   res: Response,
