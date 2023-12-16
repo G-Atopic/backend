@@ -27,13 +27,9 @@ describe('Login Route Test', () => {
         ],
         binaryPassword: [2, 2, 1, 4],
       });
-
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
-      id: 2,
-      name: 'Gabriel',
-      email: 'gabriel@gmail.com',
-      photo: null,
+      token: expect.any(String),
     });
   });
 

@@ -19,8 +19,6 @@ const validatePassword = async ({
       })
       .join('');
 
-    console.log(onePossiblePassword);
-
     allPossiblePasswords.push(
       bcrypt.compare(onePossiblePassword, databasePassword),
     );

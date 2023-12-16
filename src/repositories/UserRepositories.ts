@@ -20,19 +20,12 @@ const update = async (
   id: number,
   data: UserType.UserPatch,
 ): Promise<UserType.DatabaseUser[]> => {
-  try {
-    console.log('quebra aqui?', data);
-    const user = await knex('users')
-      .where({ id })
-      .update(data)
-      .returning(['id', 'name', 'email', 'photo']);
-    console.log('quebra aqui?');
-    return user;
-  } catch (error) {
-    return [];
-  }
+  const user = await knex('users')
+    .where({ id })
+    .update(data)
+    .returning(['id', 'name', 'email', 'photo']);
+  return user;
 };
-// .returning(['id', 'name', 'email', 'photo']);
 
 const removeById = async (id: number) =>
   await knex('users').where({ id }).del();
