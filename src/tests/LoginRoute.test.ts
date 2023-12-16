@@ -27,7 +27,6 @@ describe('Login Route Test', () => {
         ],
         binaryPassword: [2, 2, 1, 4],
       });
-    console.log(JSON.stringify(response));
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       token: expect.any(String),
