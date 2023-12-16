@@ -21,12 +21,10 @@ const update = async (
   data: UserType.UserPatch,
 ): Promise<UserType.DatabaseUser[]> => {
   try {
-    console.log('quebra aqui?', data);
     const user = await knex('users')
       .where({ id })
       .update(data)
       .returning(['id', 'name', 'email', 'photo']);
-    console.log('quebra aqui?');
     return user;
   } catch (error) {
     return [];
