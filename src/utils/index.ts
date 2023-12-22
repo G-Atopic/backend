@@ -5,10 +5,11 @@ const errorConstructor = (
 ): ErrorType.CustomError => ({
   message: error.message,
   code: error.code,
+  isCustomError: true,
 });
 
 const errorIsCustomError = (err: unknown): err is ErrorType.CustomError => {
-  return (err as ErrorType.CustomError).code !== undefined;
+  return (err as ErrorType.CustomError).isCustomError !== undefined;
 };
 
 const errorIsKnex = (err: unknown): err is ErrorType.KnexError => {

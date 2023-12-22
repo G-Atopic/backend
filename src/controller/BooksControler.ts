@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { Book } from '../services';
-const book = { name: 'teste' };
+
+const createBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const book = await Book.createBook(req.body);
+    res.status(201).json(book);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const searchBookByName = async (
   req: Request,
   res: Response,
@@ -15,6 +24,7 @@ const searchBookByName = async (
     next(error);
   }
 };
+
 const findBookById = async (
   req: Request,
   res: Response,
@@ -24,15 +34,6 @@ const findBookById = async (
     const bookId = req.params.id;
     const book = await Book.getBookById(bookId);
     res.status(200).json(book);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const createBook = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const book = await Book.createBook(req.body);
-    res.status(201).json(book);
   } catch (error) {
     next(error);
   }

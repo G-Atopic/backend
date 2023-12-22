@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*eslint  @typescript-eslint/no-unused-vars: ["warn", { "varsIgnorePattern": "next" }]*/
 
 import { Request, Response, NextFunction } from 'express';
@@ -32,16 +33,19 @@ export const errorHandler = async (
     }
   }
   if (errorIsKnex(err)) {
+    console.warn('if (errorIsKnex(err))');
     if (req.params.stack === 'true') {
       error.KnexError = err;
     }
     error.message = 'Something went wrong with the database';
   }
   if (errorIsCustomError(err)) {
+    console.warn('if (errorIsCustomError(err)) ');
     error.message = err.message;
     error.code = err.code;
   }
   if (errorIsValidationError(err)) {
+    console.warn('if (errorIsValidationError(err)) ');
     error.message = err.message;
     error.code = 400;
   }

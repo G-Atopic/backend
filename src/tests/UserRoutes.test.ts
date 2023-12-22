@@ -161,9 +161,10 @@ describe('Delete User Route', () => {
   test('should return error user not found', async () => {
     spy.mockImplementationOnce(async () => 0);
 
-    const response = await request(app).delete('/user/1');
+    const response = await request(app).delete('/user/1000');
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ code: 400, message: 'User not found' });
   });
 
   test('should return error Invalid user id', async () => {

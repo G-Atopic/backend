@@ -14,4 +14,5 @@ export type ErrorBody = {
 export type CustomError = {
   message: string;
   code: number;
+  isCustomError?: true;
 };

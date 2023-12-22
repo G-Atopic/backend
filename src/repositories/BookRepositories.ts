@@ -13,10 +13,10 @@ const bookMock = {
   pages: 200,
 };
 
-const fingBookById = async (id: string): Promise<BookType.DatabaseBook> =>
+const findBookById = async (id: string): Promise<BookType.DatabaseBook> =>
   await knex('books').select('*').where({ id }).first();
 
-const fingBookByName = async (name: string): Promise<BookType.DatabaseBook[]> =>
+const findBookByName = async (name: string): Promise<BookType.DatabaseBook[]> =>
   await knex('books').select('*').where({ name });
 
 const createBook = async (
@@ -26,11 +26,6 @@ const createBook = async (
   const newBook: BookType.InsertBook = {
     ...book,
     photo,
-    totalViews: 0,
-    favorites: 0,
-    rating: 5,
-    ratingTotal: 1,
-    pages: 0,
   };
   return (await knex('books').insert(newBook).returning('*'))[0];
 };
@@ -45,8 +40,8 @@ const deleteBook = async (id: string): Promise<number> =>
   await knex('books').delete().where({ id });
 
 export default {
-  fingBookByName,
-  fingBookById,
+  findBookByName,
+  findBookById,
   createBook,
   updateBook,
   deleteBook,

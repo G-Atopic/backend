@@ -2,22 +2,17 @@ import { Router } from 'express';
 import UserController from '../controller/UserController';
 import {
   validateRouteId,
-  validateCreateBody,
-  validateUpdateBody,
-} from '../middlewares/validateRequest';
+  createUserBody,
+  updateUserBody,
+} from '../middlewares';
 
 const router = Router();
 
 router.get('/:id', validateRouteId, UserController.findUserById);
 
-router.post('/', validateCreateBody, UserController.createUser);
+router.post('/', createUserBody, UserController.createUser);
 
-router.put(
-  '/:id',
-  validateUpdateBody,
-  validateRouteId,
-  UserController.updateUser,
-);
+router.put('/:id', updateUserBody, validateRouteId, UserController.updateUser);
 
 router.delete('/:id', validateRouteId, UserController.deleteUser);
 

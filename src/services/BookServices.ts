@@ -2,8 +2,15 @@ import { Book } from '../repositories';
 import { BookType } from '../types';
 import { errorConstructor } from '../utils';
 
+const createBook = async (
+  bookData: BookType.Book,
+): Promise<BookType.DatabaseBook> => {
+  const book = await Book.createBook(bookData);
+  return book;
+};
+
 const getBookById = async (bookId: string): Promise<BookType.DatabaseBook> => {
-  const book = await Book.fingBookById(bookId);
+  const book = await Book.findBookById(bookId);
   if (!book) throw errorConstructor({ message: 'Book not found', code: 400 });
 
   return book;
@@ -11,19 +18,12 @@ const getBookById = async (bookId: string): Promise<BookType.DatabaseBook> => {
 const getBookByName = async (
   bookId: string,
 ): Promise<BookType.DatabaseBook[]> => {
-  const booksFound = await Book.fingBookByName(bookId);
+  const booksFound = await Book.findBookByName(bookId);
   if (!booksFound[0]) {
     throw errorConstructor({ message: 'Book not found', code: 400 });
   }
 
   return booksFound;
-};
-
-const createBook = async (
-  bookData: BookType.Book,
-): Promise<BookType.DatabaseBook> => {
-  const book = await Book.createBook(bookData);
-  return book;
 };
 
 const updateBook = async (
