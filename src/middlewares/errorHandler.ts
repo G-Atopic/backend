@@ -4,19 +4,20 @@ import { Request, Response, NextFunction } from 'express';
 import { ErrorType } from '../types';
 import {
   errorIsCustomError,
-  errorIsErrorClass,
   errorIsKnex,
   errorIsValidationError,
 } from '../utils';
-
-export const notFoundHanlder = (_req: Request, res: Response) => {
+import log from './requestLogger';
+export const notFoundHandler = (req: Request, res: Response) => {
+  log.requestLogger({ req, success: false });
   res.status(404).json({ message: 'Route not found!' });
 };
 
 export const errorHandler = async (
-  err: unknown,
+  err: Record<string, string>,
   req: Request,
   res: Response,
+  // cant disabled no-unused-vars in eslint for _next
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction,
 ) => {
@@ -25,26 +26,27 @@ export const errorHandler = async (
     code: 500,
   };
 
-  if (errorIsErrorClass(err)) {
-    if (req.query.stack === 'true') {
-      error.message = err.message;
-      error.stack = err.stack;
-    }
+  if (errorIsValidationError(err)) {
+    error.message = err.message;
+    error.code = 400;
   }
+
   if (errorIsKnex(err)) {
     if (req.params.stack === 'true') {
       error.KnexError = err;
     }
     error.message = 'Something went wrong with the database';
   }
+
   if (errorIsCustomError(err)) {
     error.message = err.message;
     error.code = err.code;
   }
-  if (errorIsValidationError(err)) {
-    error.message = err.message;
-    error.code = 400;
+
+  if (req.query.stack === 'true' && !errorIsCustomError(err)) {
+    error.stack = err.stack;
   }
 
+  log.requestLogger({ req, success: false });
   res.status(error.code).json(error);
 };

@@ -20,7 +20,7 @@ const createUser = async (
   }
   const newUser = await User.create({ ...userData, password });
 
-  return newUser[0];
+  return newUser;
 };
 
 const updateUser = async (
@@ -38,14 +38,19 @@ const updateUser = async (
   }
   const user = await User.update(userId, userData);
 
-  if (!user[0]) {
+  if (!user) {
     throw errorConstructor({ message: 'User not found', code: 400 });
   }
-  return user[0];
+  return user;
 };
 
 const deleteUser = async (userId: number): Promise<number> => {
-  return await User.removeById(userId);
+  const deleted = await User.removeById(userId);
+  if (!deleted) {
+    throw errorConstructor({ message: 'User not found', code: 404 });
+  }
+
+  return deleted;
 };
 
 export default { getUser, updateUser, deleteUser, createUser };

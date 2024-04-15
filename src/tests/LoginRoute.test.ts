@@ -1,32 +1,32 @@
 import bcrypt from 'bcrypt';
 import request from 'supertest';
 import { app } from '../app';
-import { expect, test, describe, vi } from 'vitest';
+import { expect, test, describe, vi, afterEach } from 'vitest';
 import { Login } from '../repositories';
+import log from '../middlewares/requestLogger';
+import { logMock } from './mocks/requestLogMock';
+import { loginParamsMock, userMock } from './mocks/logginMock';
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
 describe('Login Route Test', () => {
+  const spyLog = vi.spyOn(log, 'requestLogger').mockImplementation(() => ({
+    ...logMock,
+    success: true,
+  }));
+
   const spy = vi.spyOn(Login, 'findUser');
   test('should login successfully', async () => {
     vi.spyOn(bcrypt, 'compare').mockImplementation(async () => true);
-    spy.mockImplementationOnce(async () => ({
-      id: 2,
-      name: 'Gabriel',
-      email: 'gabriel@gmail.com',
-      password: 'EncriptedStringPassword',
-      photo: null,
-    }));
+
+    spy.mockImplementationOnce(async () => userMock);
     const response = await request(app)
-      .post('/login')
-      .send({
-        email: 'gabriel@gmail.com',
-        buttons: [
-          [0, 5],
-          [3, 9],
-          [1, 2],
-          [8, 7],
-          [4, 6],
-        ],
-        binaryPassword: [2, 2, 1, 4],
-      });
+      .post('/login?stack=true')
+      .send(loginParamsMock);
+
+    expect(spyLog).toBeCalledTimes(1);
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       token: expect.any(String),
@@ -35,27 +35,10 @@ describe('Login Route Test', () => {
 
   test('login should fail', async () => {
     vi.spyOn(bcrypt, 'compare').mockImplementation(async () => false);
-    spy.mockImplementationOnce(async () => ({
-      id: 2,
-      name: 'Gabriel',
-      email: 'gabriel@gmail.com',
-      password: 'EncriptedStringPassword',
-      photo: null,
-    }));
-    const response = await request(app)
-      .post('/login')
-      .send({
-        email: 'gabriel@gmail.com',
-        buttons: [
-          [0, 5],
-          [3, 9],
-          [1, 2],
-          [8, 7],
-          [4, 6],
-        ],
-        binaryPassword: [2, 2, 1, 3],
-      });
+    spy.mockImplementationOnce(async () => userMock);
+    const response = await request(app).post('/login').send(loginParamsMock);
 
+    expect(spyLog).toBeCalledTimes(1);
     expect(response.status).toBe(401);
     expect(response.body).toEqual({
       message: 'Invalid Credentials',

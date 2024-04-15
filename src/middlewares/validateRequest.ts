@@ -3,7 +3,7 @@ import * as yup from 'yup';
 
 const loginValidatorMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -35,7 +35,7 @@ const loginValidatorMiddleware = async (
 
 const validateCreateBody = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -56,7 +56,7 @@ const validateCreateBody = async (
 
 const validateUpdateBody = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction,
 ) => {
   try {
