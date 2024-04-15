@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Login } from '../repositories';
 import { errorConstructor } from '../utils';
-import { LoginType, UserType } from '../types';
+import { LoginType } from '../types';
 import jwt from 'jsonwebtoken';
 
 const validatePassword = async ({
@@ -36,12 +36,12 @@ const userLogin = async ({
   buttons,
   binaryPassword,
 }: LoginType.UserLoginParams): Promise<{ token: string }> => {
-  const { password, ...user } = await Login.findUser(email);
-
+  const user = await Login.findUser(email);
   if (!user) {
     throw errorConstructor({ message: 'User not found', code: 400 });
   }
-  const databasePassword = password;
+
+  const databasePassword = user.password;
 
   const isPasswordValid = await validatePassword({
     databasePassword,
